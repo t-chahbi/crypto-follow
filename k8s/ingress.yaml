@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: crypto-monitor-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik # Default for k0s
+spec:
+  rules:
+    - host: crypto.local # TODO: Update with your local domain or IP
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: crypto-monitor-service
+                port:
+                  number: 80

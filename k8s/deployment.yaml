@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crypto-monitor
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crypto-monitor
+  template:
+    metadata:
+      labels:
+        app: crypto-monitor
+    spec:
+      containers:
+        - name: crypto-monitor
+          image: ghcr.io/YOUR_USERNAME/crypto-monitor:latest # TODO: Update with your registry/username
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_SUPABASE_URL
+              value: "http://YOUR_SUPABASE_HOST:8000" # TODO: Update with your self-hosted Supabase URL
+            - name: NEXT_PUBLIC_SUPABASE_ANON_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: supabase-secrets
+                  key: anon-key
