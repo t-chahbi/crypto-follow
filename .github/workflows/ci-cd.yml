@@ -41,3 +41,22 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Update Kubernetes Deployment
+        run: |
+          # Apply manifests in case they changed
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/ingress.yaml
+          
+          # Force restart to pull new image
+          kubectl rollout restart deployment/crypto-monitor
+          kubectl rollout status deployment/crypto-monitor
+
