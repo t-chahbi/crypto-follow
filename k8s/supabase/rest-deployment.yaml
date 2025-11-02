@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supabase-rest
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: supabase-rest
+  template:
+    metadata:
+      labels:
+        app: supabase-rest
+    spec:
+      containers:
+        - name: rest
+          image: postgrest/postgrest:v12.0.1
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PGRST_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: supabase-secrets
+                  key: JWT_SECRET
+            - name: PGRST_DB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: supabase-secrets
+                  key: PGRST_DB_URI
+          envFrom:
+            - configMapRef:
+                name: supabase-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: supabase-rest
+  namespace: default
+spec:
+  selector:
+    app: supabase-rest
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000

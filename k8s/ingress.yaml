@@ -17,3 +17,24 @@ spec:
                 name: crypto-monitor-service
                 port:
                   number: 80
+    - host: studio.crypto.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: supabase-studio
+                port:
+                  number: 3000
+    - host: api.crypto.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: supabase-kong
+                port:
+                  number: 8000
+

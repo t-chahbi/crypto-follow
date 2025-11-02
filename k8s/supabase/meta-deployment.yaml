@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supabase-meta
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: supabase-meta
+  template:
+    metadata:
+      labels:
+        app: supabase-meta
+    spec:
+      containers:
+        - name: meta
+          image: supabase/postgres-meta:v0.76.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PG_META_DB_HOST
+              value: supabase-db
+            - name: PG_META_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: supabase-secrets
+                  key: POSTGRES_PASSWORD
+            - name: PG_META_DB_NAME
+              value: postgres
+            - name: PG_META_DB_USER
+              value: supabase_admin
+          envFrom:
+            - configMapRef:
+                name: supabase-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: supabase-meta
+  namespace: default
+spec:
+  selector:
+    app: supabase-meta
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

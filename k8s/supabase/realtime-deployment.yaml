@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supabase-realtime
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: supabase-realtime
+  template:
+    metadata:
+      labels:
+        app: supabase-realtime
+    spec:
+      containers:
+        - name: realtime
+          image: supabase/realtime:v2.25.22
+          ports:
+            - containerPort: 4000
+          env:
+            - name: DB_HOST
+              value: supabase-db
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: postgres
+            - name: DB_USER
+              value: supabase_admin
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: supabase-secrets
+                  key: POSTGRES_PASSWORD
+            - name: API_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: supabase-secrets
+                  key: JWT_SECRET
+            - name: DB_ENC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: supabase-secrets
+                  key: REALTIME_ENC_KEY
+          envFrom:
+            - configMapRef:
+                name: supabase-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: supabase-realtime
+  namespace: default
+spec:
+  selector:
+    app: supabase-realtime
+  ports:
+    - protocol: TCP
+      port: 4000
+      targetPort: 4000
