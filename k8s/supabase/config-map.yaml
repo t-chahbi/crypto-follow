@@ -9,14 +9,25 @@ data:
   POSTGRES_HOST: supabase-db
   POSTGRES_PORT: "5432"
   
-  # Auth (GoTrue)
+  # --- FIX POUR L'ERREUR AUTH (GoTrue) ---
+  # C'est la variable qui manquait :
+  API_EXTERNAL_URL: "http://172.25.71.36:8000/auth/v1"
+  
+  # Configuration Auth mise à jour
   GOTRUE_API_HOST: "0.0.0.0"
   GOTRUE_API_PORT: "9999"
   GOTRUE_DB_DRIVER: postgres
-  GOTRUE_SITE_URL: "http://localhost:3000" # Update with your domain
+  # Important : rediriger vers votre IP, pas localhost
+  GOTRUE_SITE_URL: "http://172.25.71.36:3000"
   GOTRUE_URI_ALLOW_LIST: "*"
   GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
   GOTRUE_MAILER_AUTOCONFIRM: "true"
+  
+  # --- Variables nécessaires pour le Dashboard (Studio) ---
+  SUPABASE_URL: "http://172.25.71.36:8000"
+  SUPABASE_PUBLIC_URL: "http://172.25.71.36:8000"
+  STUDIO_DEFAULT_ORGANIZATION: "Supabase"
+  STUDIO_DEFAULT_PROJECT: "Supabase"
   
   # Rest (PostgREST)
   PGRST_DB_SCHEMAS: "public,storage,graphql_public"
