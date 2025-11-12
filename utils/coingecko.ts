@@ -47,3 +47,16 @@ export async function getCoinHistory(id: string) {
         return null;
     }
 }
+
+export async function getCoinDetails(id: string) {
+    try {
+        const res = await fetch(`${COINGECKO_API_URL}/coins/${id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=true`, {
+            next: { revalidate: 60 }
+        });
+        if (!res.ok) throw new Error('Failed to fetch coin details');
+        return res.json();
+    } catch (error) {
+        console.error('Error fetching coin details:', error);
+        return null;
+    }
+}

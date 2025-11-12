@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { getMarketData } from '@/utils/coingecko'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,7 +19,12 @@ export default async function PortfolioPage() {
         .eq('user_id', user.id)
         .order('timestamp', { ascending: false })
 
-    // Calculate Holdings (Simplified)
+    // Fetch Current Prices
+    const marketData = await getMarketData()
+    const safeMarketData = Array.isArray(marketData) ? marketData : []
+    const priceMap = new Map(safeMarketData.map((coin: any) => [coin.symbol.toUpperCase(), coin.current_price]))
+
+    // Calculate Holdings
     const holdings: Record<string, number> = {}
     transactions?.forEach(tx => {
         const amount = Number(tx.amount)
@@ -29,38 +35,59 @@ export default async function PortfolioPage() {
         }
     })
 
+    // Calculate Total Value
+    let totalValue = 0
+    const holdingsWithValue = Object.entries(holdings).map(([symbol, amount]) => {
+        const price = priceMap.get(symbol) || 0
+        const value = amount * price
+        totalValue += value
+        return { symbol, amount, price, value }
+    })
+
     return (
-        <div className="min-h-screen bg-gray-950 text-white p-8">
+        <div className="min-h-screen bg-black text-white p-8">
             <div className="max-w-7xl mx-auto">
-                <Link href="/dashboard" className="inline-flex items-center text-gray-400 hover:text-white mb-8">
+                <Link href="/dashboard" className="inline-flex items-center text-gray-400 hover:text-white mb-8 transition-colors">
                     <ArrowLeft className="w-4 h-4 mr-2" /> Retour au Tableau de Bord
                 </Link>
 
-                <h1 className="text-3xl font-bold mb-8">Mon Portefeuille</h1>
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-3xl font-bold">Mon Portefeuille</h1>
+                    <div className="text-right">
+                        <p className="text-gray-400 text-sm">Valeur Totale Estimée</p>
+                        <p className="text-3xl font-mono font-bold text-indigo-400">${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    </div>
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Holdings Card */}
-                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                    <div className="bg-white/5 p-6 rounded-xl border border-white/10">
                         <h2 className="text-xl font-semibold mb-4">Avoirs Actuels</h2>
                         <div className="space-y-4">
-                            {Object.entries(holdings).map(([symbol, amount]) => (
-                                <div key={symbol} className="flex justify-between items-center p-3 bg-gray-800/50 rounded-lg">
-                                    <span className="font-bold">{symbol}</span>
-                                    <span className="font-mono">{amount.toFixed(4)}</span>
+                            {holdingsWithValue.map(({ symbol, amount, price, value }) => (
+                                <div key={symbol} className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                                    <div>
+                                        <span className="font-bold block">{symbol}</span>
+                                        <span className="text-xs text-gray-400">{amount.toFixed(4)} unités</span>
+                                    </div>
+                                    <div className="text-right">
+                                        <span className="font-mono block">${value.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                        <span className="text-xs text-gray-400">@ ${price.toLocaleString()}</span>
+                                    </div>
                                 </div>
                             ))}
-                            {Object.keys(holdings).length === 0 && (
+                            {holdingsWithValue.length === 0 && (
                                 <p className="text-gray-500">Aucun actif pour le moment.</p>
                             )}
                         </div>
                     </div>
 
                     {/* Transaction History */}
-                    <div className="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                    <div className="bg-white/5 p-6 rounded-xl border border-white/10">
                         <h2 className="text-xl font-semibold mb-4">Transactions Récentes</h2>
                         <div className="space-y-4">
                             {transactions?.map((tx) => (
-                                <div key={tx.id} className="flex justify-between items-center p-3 bg-gray-800/50 rounded-lg">
+                                <div key={tx.id} className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
                                     <div>
                                         <span className={`font-bold ${tx.type === 'BUY' ? 'text-green-400' : 'text-red-400'}`}>
                                             {tx.type === 'BUY' ? 'ACHAT' : 'VENTE'}

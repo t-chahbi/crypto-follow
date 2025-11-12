@@ -1,59 +1,70 @@
-import { createClient } from '@/utils/supabase/server'
-import CryptoChart from '@/components/CryptoChart'
+import { getCoinDetails, getCoinHistory } from '@/utils/coingecko'
+import DashboardChart from '@/components/DashboardChart'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+// import { Card, CardBody } from "@heroui/react"
 
 export const dynamic = 'force-dynamic'
 
-export default async function CryptoDetailPage({ params }: { params: { id: string } }) {
-    const supabase = await createClient()
-    const { id } = params // This is the symbol (e.g., BTC)
+export default async function CryptoDetailPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params
 
-    // Fetch Asset Details
-    const { data: asset } = await supabase
-        .from('crypto_assets')
-        .select('*')
-        .eq('symbol', id)
-        .single()
+    try {
+        const [coin, history] = await Promise.all([
+            getCoinDetails(id),
+            getCoinHistory(id)
+        ])
 
-    // Fetch Historical Data (Last 7 days for simplicity)
-    const { data: history } = await supabase
-        .from('market_data')
-        .select('price_usd, timestamp')
-        .eq('crypto_symbol', id)
-        .order('timestamp', { ascending: true })
-        // In a real app, limit or aggregate this
-        .limit(100)
+        if (!coin) {
+            return <div className="min-h-screen bg-black text-white p-8">Cryptomonnaie non trouvée</div>
+        }
 
-    const chartData = history?.map(h => ({
-        timestamp: h.timestamp,
-        price: h.price_usd
-    })) || []
+        return (
+            <div className="min-h-screen bg-black text-white p-8">
+                <div className="max-w-7xl mx-auto">
+                    <Link href="/dashboard" className="inline-flex items-center text-gray-400 hover:text-white mb-8 transition-colors">
+                        <ArrowLeft className="w-4 h-4 mr-2" /> Retour au Tableau de Bord
+                    </Link>
 
-    return (
-        <div className="min-h-screen bg-gray-950 text-white p-8">
-            <div className="max-w-7xl mx-auto">
-                <Link href="/dashboard" className="inline-flex items-center text-gray-400 hover:text-white mb-8">
-                    <ArrowLeft className="w-4 h-4 mr-2" /> Retour au Tableau de Bord
-                </Link>
+                    <div className="grid gap-8">
+                        <div className="bg-white/5 border border-white/10 p-8 rounded-xl">
+                            <div className="flex items-center gap-4 mb-6">
+                                <img src={coin.image?.large} alt={coin.name} className="w-16 h-16 rounded-full" />
+                                <div>
+                                    <h1 className="text-4xl font-bold">{coin.name}</h1>
+                                    <span className="text-xl text-gray-500 uppercase">{coin.symbol}</span>
+                                </div>
+                            </div>
 
-                <div className="grid gap-8">
-                    <div className="bg-gray-900 p-8 rounded-xl border border-gray-800">
-                        <div className="flex items-baseline gap-4 mb-2">
-                            <h1 className="text-4xl font-bold">{asset?.name}</h1>
-                            <span className="text-xl text-gray-500">{asset?.symbol}</span>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div>
+                                    <p className="text-gray-400 mb-1">Prix Actuel</p>
+                                    <div className="text-3xl font-mono font-bold text-indigo-400">
+                                        ${coin.market_data?.current_price?.usd?.toLocaleString()}
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-gray-400 mb-1">Capitalisation</p>
+                                    <div className="text-2xl font-mono">
+                                        ${coin.market_data?.market_cap?.usd?.toLocaleString()}
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-gray-400 mb-1">Volume 24h</p>
+                                    <div className="text-2xl font-mono">
+                                        ${coin.market_data?.total_volume?.usd?.toLocaleString()}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="text-2xl font-mono text-indigo-400">
-                            ${chartData[chartData.length - 1]?.price?.toLocaleString()}
-                        </div>
-                    </div>
 
-                    <div className="bg-gray-900 p-8 rounded-xl border border-gray-800">
-                        <h2 className="text-xl font-semibold mb-6">Historique des Prix</h2>
-                        <CryptoChart data={chartData} />
+                        <DashboardChart data={history} />
                     </div>
                 </div>
             </div>
-        </div>
-    )
+        )
+    } catch (error) {
+        console.error("Error in CryptoDetailPage:", error)
+        return <div className="min-h-screen bg-black text-white p-8">Une erreur est survenue lors du chargement des données.</div>
+    }
 }

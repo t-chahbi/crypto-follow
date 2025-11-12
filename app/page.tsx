@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { ArrowRight, BarChart2, Bell, Wallet } from 'lucide-react'
 import { Button, Card, CardBody, CardHeader, Divider } from "@heroui/react"

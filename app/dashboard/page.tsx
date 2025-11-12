@@ -1,8 +1,9 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import DashboardTable from '@/components/DashboardTable'
 import DashboardHeaderButtons from '@/components/DashboardHeaderButtons'
+import MarketStats from '@/components/MarketStats'
+import { getMarketData, getGlobalStats } from '@/utils/coingecko'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,35 +17,11 @@ export default async function DashboardPage() {
             redirect('/login')
         }
 
-        // Fetch latest market data for each asset
-        const { data: assets, error: dbError } = await supabase
-            .from('crypto_assets')
-            .select(`
-          symbol,
-          name,
-          rank,
-          market_data (
-            price_usd,
-            change_percent_24h,
-            volume_24h_usd,
-            market_cap_usd
-          )
-        `)
-            .order('rank', { ascending: true })
-            .limit(20)
-
-        if (dbError) {
-            console.error("DB Error:", dbError)
-        }
-
-        // Process data to get the latest entry for each
-        const processedAssets = assets?.map(asset => {
-            const latestData = asset.market_data?.[0] || {}
-            return {
-                ...asset,
-                ...latestData
-            }
-        }) || []
+        // Fetch data from CoinGecko
+        const [assets, globalStats] = await Promise.all([
+            getMarketData(),
+            getGlobalStats()
+        ]);
 
         return (
             <div className="min-h-screen bg-black text-white p-8">
@@ -59,7 +36,9 @@ export default async function DashboardPage() {
                         <DashboardHeaderButtons />
                     </header>
 
-                    <DashboardTable assets={processedAssets} />
+                    <MarketStats stats={globalStats} />
+
+                    <DashboardTable assets={assets || []} />
                 </div>
             </div>
         )
