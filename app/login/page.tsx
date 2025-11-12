@@ -46,7 +46,8 @@ export default function LoginPage() {
         if (error) {
             setError(error.message)
         } else {
-            setError('Check your email for the confirmation link.')
+            // Auto-confirm is enabled, so we can redirect immediately
+            router.push('/dashboard')
         }
         setLoading(false)
     }
@@ -56,10 +57,10 @@ export default function LoginPage() {
             <div className="w-full max-w-md space-y-8 rounded-xl border border-gray-800 bg-gray-900 p-10 shadow-2xl">
                 <div className="text-center">
                     <h2 className="mt-6 text-3xl font-bold tracking-tight text-white">
-                        Crypto Monitor
+                        Crypto Follow
                     </h2>
                     <p className="mt-2 text-sm text-gray-400">
-                        Sign in to your account
+                        Connectez-vous à votre compte
                     </p>
                 </div>
 
@@ -70,7 +71,7 @@ export default function LoginPage() {
                                 type="email"
                                 required
                                 className="relative block w-full rounded-t-md border-0 bg-gray-800 py-2.5 px-3 text-white ring-1 ring-inset ring-gray-700 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                placeholder="Email address"
+                                placeholder="Adresse Email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
@@ -80,7 +81,7 @@ export default function LoginPage() {
                                 type="password"
                                 required
                                 className="relative block w-full rounded-b-md border-0 bg-gray-800 py-2.5 px-3 text-white ring-1 ring-inset ring-gray-700 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                placeholder="Password"
+                                placeholder="Mot de passe"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
@@ -88,7 +89,7 @@ export default function LoginPage() {
                     </div>
 
                     {error && (
-                        <div className="text-sm text-red-500 text-center">
+                        <div className="text-sm text-indigo-400 text-center">
                             {error}
                         </div>
                     )}
@@ -99,7 +100,7 @@ export default function LoginPage() {
                             disabled={loading}
                             className="group relative flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
                         >
-                            {loading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Sign in'}
+                            {loading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Se connecter'}
                         </button>
                         <button
                             type="button"
@@ -107,7 +108,7 @@ export default function LoginPage() {
                             disabled={loading}
                             className="group relative flex w-full justify-center rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:opacity-50"
                         >
-                            Sign up
+                            S'inscrire
                         </button>
                     </div>
                 </form>

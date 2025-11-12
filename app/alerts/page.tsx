@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Trash2 } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AlertsPage() {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -23,11 +25,11 @@ export default async function AlertsPage() {
         <div className="min-h-screen bg-gray-950 text-white p-8">
             <div className="max-w-7xl mx-auto">
                 <Link href="/dashboard" className="inline-flex items-center text-gray-400 hover:text-white mb-8">
-                    <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
+                    <ArrowLeft className="w-4 h-4 mr-2" /> Retour au Tableau de Bord
                 </Link>
 
                 <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold">Price Alerts</h1>
+                    <h1 className="text-3xl font-bold">Alertes de Prix</h1>
                     {/* <CreateAlertButton /> would go here */}
                 </div>
 
@@ -35,10 +37,10 @@ export default async function AlertsPage() {
                     <table className="w-full text-left">
                         <thead className="bg-gray-800/50">
                             <tr>
-                                <th className="p-4 font-medium text-gray-400">Asset</th>
+                                <th className="p-4 font-medium text-gray-400">Actif</th>
                                 <th className="p-4 font-medium text-gray-400">Condition</th>
-                                <th className="p-4 font-medium text-gray-400">Target Price</th>
-                                <th className="p-4 font-medium text-gray-400">Status</th>
+                                <th className="p-4 font-medium text-gray-400">Prix Cible</th>
+                                <th className="p-4 font-medium text-gray-400">Statut</th>
                                 <th className="p-4 font-medium text-gray-400">Action</th>
                             </tr>
                         </thead>
@@ -49,14 +51,14 @@ export default async function AlertsPage() {
                                     <td className="p-4">
                                         <span className={`px-2 py-1 rounded text-xs font-medium ${alert.condition === 'ABOVE' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'
                                             }`}>
-                                            {alert.condition}
+                                            {alert.condition === 'ABOVE' ? 'SUPÉRIEUR À' : 'INFÉRIEUR À'}
                                         </span>
                                     </td>
                                     <td className="p-4 font-mono">${alert.target_price.toLocaleString()}</td>
                                     <td className="p-4">
                                         <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium ${alert.is_active ? 'bg-blue-900 text-blue-300' : 'bg-gray-700 text-gray-300'
                                             }`}>
-                                            {alert.is_active ? 'Active' : 'Inactive'}
+                                            {alert.is_active ? 'Actif' : 'Inactif'}
                                         </span>
                                     </td>
                                     <td className="p-4">
@@ -69,7 +71,7 @@ export default async function AlertsPage() {
                             {(!alerts || alerts.length === 0) && (
                                 <tr>
                                     <td colSpan={5} className="p-8 text-center text-gray-500">
-                                        No alerts configured.
+                                        Aucune alerte configurée.
                                     </td>
                                 </tr>
                             )}

@@ -1,4 +1,4 @@
-# Diagrammes Mermaid - Crypto Monitor
+# Diagrammes Mermaid - Crypto Follow
 Réalisé sur https://mermaid.live
 ## 1. Use Case Diagram
 ```mermaid
@@ -10,7 +10,7 @@ graph LR
         CoinCap((API CoinCap))
     end
 
-    subgraph "Crypto Monitor App"
+    subgraph "Crypto Follow App"
         UC1(S'inscrire / Se connecter)
         UC2(Consulter le Dashboard\nPrix, Graphiques)
         UC3(Rechercher / Filtrer Cryptos)

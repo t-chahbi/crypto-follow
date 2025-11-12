@@ -3,6 +3,8 @@ import CryptoChart from '@/components/CryptoChart'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default async function CryptoDetailPage({ params }: { params: { id: string } }) {
     const supabase = await createClient()
     const { id } = params // This is the symbol (e.g., BTC)
@@ -32,7 +34,7 @@ export default async function CryptoDetailPage({ params }: { params: { id: strin
         <div className="min-h-screen bg-gray-950 text-white p-8">
             <div className="max-w-7xl mx-auto">
                 <Link href="/dashboard" className="inline-flex items-center text-gray-400 hover:text-white mb-8">
-                    <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
+                    <ArrowLeft className="w-4 h-4 mr-2" /> Retour au Tableau de Bord
                 </Link>
 
                 <div className="grid gap-8">
@@ -47,7 +49,7 @@ export default async function CryptoDetailPage({ params }: { params: { id: strin
                     </div>
 
                     <div className="bg-gray-900 p-8 rounded-xl border border-gray-800">
-                        <h2 className="text-xl font-semibold mb-6">Price History</h2>
+                        <h2 className="text-xl font-semibold mb-6">Historique des Prix</h2>
                         <CryptoChart data={chartData} />
                     </div>
                 </div>
