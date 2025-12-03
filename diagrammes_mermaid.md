@@ -158,7 +158,7 @@ sequenceDiagram
     Client->>Client: Rendu des Graphiques
 ```
 
-## 4. Activity Diagram
+## 4. Activity Diagram (état transition)
 ```mermaid
 stateDiagram-v2
     [*] --> Début
