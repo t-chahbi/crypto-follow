@@ -7,7 +7,7 @@ graph LR
         User((Utilisateur))
         Admin((Administrateur))
         System((Système\nCron/Scheduler))
-        CoinCap((API CoinCap))
+        CoinGeko((API CoinGeko))
     end
 
     subgraph "Crypto Follow App"
@@ -36,7 +36,7 @@ graph LR
     System --> UC8
     System --> UC9
 
-    UC8 --> CoinCap
+    UC8 --> CoinGeko
     UC9 -.-> UC5
 ```
 
@@ -106,7 +106,7 @@ classDiagram
 sequenceDiagram
     participant Cron as Vercel Cron / GitHub Action
     participant API as Next.js API Route
-    participant Ext as API CoinCap
+    participant Ext as API CoinGeko
     participant DB as Supabase DB
     participant Notif as Service Notification
 
@@ -162,7 +162,7 @@ sequenceDiagram
 ```mermaid
 stateDiagram-v2
     [*] --> Début
-    Début --> FetchData : Requête API CoinCap
+    Début --> FetchData : Requête API CoinGeko
     
     state FetchData {
         [*] --> AppelAPI
@@ -211,7 +211,7 @@ graph TD
     end
 
     subgraph "External Services"
-        CoinCap["API CoinCap"]
+        CoinGeko["API CoinGeko"]
         SMTP["Service Email"]
     end
 
@@ -219,7 +219,7 @@ graph TD
     Browser -- HTTPS / WebSocket --> Supabase
     NextFront -- API Calls --> NextAPI
     NextAPI -- SQL / REST --> Postgres
-    NextAPI -- HTTPS --> CoinCap
+    NextAPI -- HTTPS --> CoinGeko
     NextAPI -- SMTP --> SMTP
     
     Auth -- gère --> Postgres
