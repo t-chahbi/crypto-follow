@@ -1,8 +1,8 @@
 import { getCoinDetails, getCoinHistory } from '@/utils/coingecko'
 import DashboardChart from '@/components/DashboardChart'
+import PredictionCard from '@/components/PredictionCard'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-// import { Card, CardBody } from "@heroui/react"
 
 export const dynamic = 'force-dynamic'
 
@@ -58,7 +58,9 @@ export default async function CryptoDetailPage({ params }: { params: Promise<{ i
                             </div>
                         </div>
 
-                        <DashboardChart data={history} />
+                        <DashboardChart data={history} coinName={coin.name} />
+
+                        <PredictionCard historicalData={history} coinName={coin.name} />
                     </div>
                 </div>
             </div>
