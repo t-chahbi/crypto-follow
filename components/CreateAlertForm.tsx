@@ -55,6 +55,23 @@ export default function CreateAlertForm() {
                 throw new Error('Vous devez être connecté')
             }
 
+            // Get crypto info from our list
+            const cryptoInfo = popularCryptos.find(c => c.symbol === cryptoSymbol)
+
+            // First, ensure the crypto asset exists in crypto_assets table
+            const { error: upsertError } = await supabase
+                .from('crypto_assets')
+                .upsert({
+                    symbol: cryptoSymbol,
+                    name: cryptoInfo?.name || cryptoSymbol,
+                    coin_cap_id: cryptoSymbol.toLowerCase(),
+                }, { onConflict: 'symbol' })
+
+            if (upsertError) {
+                console.error('Error upserting crypto asset:', upsertError)
+                // Continue anyway - it might already exist
+            }
+
             // Insert alert
             const { error: insertError } = await supabase
                 .from('alerts')
