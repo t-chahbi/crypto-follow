@@ -4,7 +4,8 @@ import DashboardTable from '@/components/DashboardTable'
 import MarketStats from '@/components/MarketStats'
 import Navbar from '@/components/Navbar'
 import { getMarketData, getGlobalStats } from '@/utils/coingecko'
-import { TrendingUp, TrendingDown, Activity, Zap } from 'lucide-react'
+import { calculatePortfolioSummary } from '@/utils/portfolio'
+import { TrendingUp, TrendingDown, Activity, Zap, PiggyBank } from 'lucide-react'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
@@ -30,7 +31,21 @@ export default async function DashboardPage() {
             getGlobalStats()
         ])
 
+        // Fetch user transactions to calculate holdings
+        const { data: transactions } = await supabase
+            .from('transactions')
+            .select('*')
+            .eq('user_id', user.id)
+            .in('type', ['BUY', 'SELL'])
+
         const safeAssets = Array.isArray(assets) ? assets : []
+
+        // Calculate portfolio value
+        const priceMap = new Map(safeAssets.map((coin: { symbol: string; current_price: number }) =>
+            [coin.symbol.toUpperCase(), coin.current_price]
+        ))
+        const portfolioSummary = calculatePortfolioSummary(transactions || [], priceMap)
+
         const topGainer = safeAssets.reduce((max, coin) =>
             (coin.price_change_percentage_24h > (max?.price_change_percentage_24h || -Infinity)) ? coin : max
             , null as any)
@@ -64,12 +79,21 @@ export default async function DashboardPage() {
                             {/* Quick Stats */}
                             <div className="flex gap-3">
                                 <Link href="/portfolio" className="glass-card px-5 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors">
-                                    <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                                        <Activity className="w-5 h-5 text-emerald-400" />
+                                    <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center">
+                                        <Activity className="w-5 h-5 text-indigo-400" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-500">Mon Wallet</p>
                                         <p className="font-bold text-lg">${(profile?.balance ?? 10000).toLocaleString()}</p>
+                                    </div>
+                                </Link>
+                                <Link href="/portfolio" className="glass-card px-5 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors">
+                                    <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                                        <PiggyBank className="w-5 h-5 text-emerald-400" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500">Mes Cryptos</p>
+                                        <p className="font-bold text-lg text-emerald-400">${portfolioSummary.currentValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                                     </div>
                                 </Link>
                             </div>
