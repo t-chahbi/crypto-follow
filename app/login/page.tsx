@@ -1,117 +1,182 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
 import { useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
+import { createClient } from '@/utils/supabase/client'
+import { Button, Input } from "@heroui/react"
+import { Mail, Lock, TrendingUp, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import Link from 'next/link'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [mode, setMode] = useState<'login' | 'signup'>('login')
     const router = useRouter()
     const supabase = createClient()
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault()
+    const handleAuth = async () => {
         setLoading(true)
         setError(null)
 
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        })
-
-        if (error) {
-            setError(error.message)
+        try {
+            if (mode === 'login') {
+                const { error } = await supabase.auth.signInWithPassword({ email, password })
+                if (error) throw error
+            } else {
+                const { error } = await supabase.auth.signUp({ email, password })
+                if (error) throw error
+            }
+            router.push('/dashboard')
+        } catch (err: any) {
+            setError(err.message)
+        } finally {
             setLoading(false)
-        } else {
-            router.push('/dashboard')
         }
-    }
-
-    const handleSignUp = async () => {
-        setLoading(true)
-        setError(null)
-
-        const { error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                emailRedirectTo: `${location.origin}/auth/callback`,
-            },
-        })
-
-        if (error) {
-            setError(error.message)
-        } else {
-            // Auto-confirm is enabled, so we can redirect immediately
-            router.push('/dashboard')
-        }
-        setLoading(false)
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-950 text-white">
-            <div className="w-full max-w-md space-y-8 rounded-xl border border-gray-800 bg-gray-900 p-10 shadow-2xl">
-                <div className="text-center">
-                    <h2 className="mt-6 text-3xl font-bold tracking-tight text-white">
-                        Crypto Follow
-                    </h2>
-                    <p className="mt-2 text-sm text-gray-400">
-                        Connectez-vous à votre compte
-                    </p>
+        <div className="min-h-screen bg-[#0f1629] flex">
+            {/* Left Panel - Branding */}
+            <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+                {/* Background Effects */}
+                <div className="absolute inset-0">
+                    <div className="bg-orb w-[600px] h-[600px] bg-indigo-600/40 top-[-200px] left-[-200px]" />
+                    <div className="bg-orb w-[400px] h-[400px] bg-purple-600/30 bottom-[-100px] right-[-100px]" style={{ animationDelay: '-5s' }} />
+                    <div className="bg-orb w-[300px] h-[300px] bg-pink-600/20 top-[40%] left-[60%]" style={{ animationDelay: '-10s' }} />
                 </div>
 
-                <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-                    <div className="-space-y-px rounded-md shadow-sm">
+                <div className="relative z-10 flex flex-col justify-center px-16">
+                    <Link href="/" className="flex items-center gap-3 mb-12">
+                        <div className="relative">
+                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
+                                <TrendingUp className="w-7 h-7 text-white" />
+                            </div>
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 blur-xl opacity-50" />
+                        </div>
+                        <span className="text-3xl font-bold gradient-text">Crypto Follow</span>
+                    </Link>
+
+                    <h1 className="text-5xl font-bold mb-6 leading-tight">
+                        Tradez comme les
+                        <br />
+                        <span className="gradient-text">professionnels</span>
+                    </h1>
+
+                    <p className="text-xl text-gray-400 mb-8 max-w-md">
+                        Rejoignez des milliers de traders et accédez à des outils d'analyse professionnels.
+                    </p>
+
+                    <div className="flex gap-8 text-sm text-gray-500">
                         <div>
-                            <input
+                            <div className="text-2xl font-bold text-white mb-1">$10K</div>
+                            <div>Capital virtuel</div>
+                        </div>
+                        <div>
+                            <div className="text-2xl font-bold text-white mb-1">100+</div>
+                            <div>Cryptomonnaies</div>
+                        </div>
+                        <div>
+                            <div className="text-2xl font-bold text-white mb-1">24/7</div>
+                            <div>Temps réel</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Right Panel - Form */}
+            <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12">
+                <div className="w-full max-w-md">
+                    {/* Mobile Logo */}
+                    <Link href="/" className="flex items-center gap-3 mb-8 lg:hidden">
+                        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
+                            <TrendingUp className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-2xl font-bold gradient-text">Crypto Follow</span>
+                    </Link>
+
+                    <div className="glass-card p-8">
+                        <h2 className="text-2xl font-bold mb-2">
+                            {mode === 'login' ? 'Bon retour !' : 'Créer un compte'}
+                        </h2>
+                        <p className="text-gray-400 mb-8">
+                            {mode === 'login'
+                                ? 'Connectez-vous pour accéder à votre dashboard'
+                                : 'Commencez à trader avec $10,000 virtuels'
+                            }
+                        </p>
+
+                        <div className="space-y-5">
+                            <Input
                                 type="email"
-                                required
-                                className="relative block w-full rounded-t-md border-0 bg-gray-800 py-2.5 px-3 text-white ring-1 ring-inset ring-gray-700 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                placeholder="Adresse Email"
+                                label="Email"
+                                placeholder="vous@exemple.com"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onValueChange={setEmail}
+                                startContent={<Mail className="w-5 h-5 text-gray-400" />}
+                                classNames={{
+                                    inputWrapper: "bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-indigo-500",
+                                }}
                             />
-                        </div>
-                        <div>
-                            <input
-                                type="password"
-                                required
-                                className="relative block w-full rounded-b-md border-0 bg-gray-800 py-2.5 px-3 text-white ring-1 ring-inset ring-gray-700 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                placeholder="Mot de passe"
+
+                            <Input
+                                type={showPassword ? "text" : "password"}
+                                label="Mot de passe"
+                                placeholder="••••••••"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onValueChange={setPassword}
+                                startContent={<Lock className="w-5 h-5 text-gray-400" />}
+                                endContent={
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="text-gray-400 hover:text-white transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    </button>
+                                }
+                                classNames={{
+                                    inputWrapper: "bg-white/5 border border-white/10 hover:border-white/20 focus-within:border-indigo-500",
+                                }}
                             />
+
+                            {error && (
+                                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
+                                    {error}
+                                </div>
+                            )}
+
+                            <Button
+                                fullWidth
+                                size="lg"
+                                className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all"
+                                onPress={handleAuth}
+                                isLoading={loading}
+                                endContent={!loading && <ArrowRight className="w-5 h-5" />}
+                            >
+                                {mode === 'login' ? 'Se connecter' : "S'inscrire"}
+                            </Button>
+                        </div>
+
+                        <div className="mt-8 text-center">
+                            <p className="text-gray-400">
+                                {mode === 'login' ? "Pas encore de compte ?" : "Déjà un compte ?"}
+                                <button
+                                    onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+                                    className="ml-2 text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
+                                >
+                                    {mode === 'login' ? "S'inscrire" : "Se connecter"}
+                                </button>
+                            </p>
                         </div>
                     </div>
 
-                    {error && (
-                        <div className="text-sm text-indigo-400 text-center">
-                            {error}
-                        </div>
-                    )}
-
-                    <div className="flex gap-4">
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="group relative flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
-                        >
-                            {loading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Se connecter'}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={handleSignUp}
-                            disabled={loading}
-                            className="group relative flex w-full justify-center rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:opacity-50"
-                        >
-                            S'inscrire
-                        </button>
-                    </div>
-                </form>
+                    <p className="text-center text-gray-500 text-sm mt-6">
+                        En continuant, vous acceptez nos conditions d'utilisation
+                    </p>
+                </div>
             </div>
         </div>
     )
