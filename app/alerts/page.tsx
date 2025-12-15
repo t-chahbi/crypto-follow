@@ -37,7 +37,7 @@ export default async function AlertsPage() {
                     <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
                         <div>
                             <h1 className="text-4xl lg:text-5xl font-bold mb-2">
-                                <span className="gradient-text">Mes Alertes</span>
+                                <span className="text-white">Mes Alertes</span>
                             </h1>
                             <p className="text-gray-400 text-lg">Soyez notifié quand vos seuils sont atteints</p>
                         </div>

@@ -36,7 +36,7 @@ export default function LandingPage() {
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0f1629]/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <span className="text-2xl font-bold gradient-text">
+            <span className="text-2xl font-bold text-white">
               Crypto Follow
             </span>
           </Link>
@@ -69,7 +69,7 @@ export default function LandingPage() {
 
               <h1 className="text-5xl lg:text-6xl font-bold tracking-tight mb-6 leading-[1.1]">
                 Dominez le Marché avec
-                <span className="gradient-text block mt-2">l'Intelligence Temps Réel</span>
+                <span className="text-white block mt-2">l'Intelligence Temps Réel</span>
               </h1>
 
               <p className="text-xl text-gray-400 mb-10 leading-relaxed">
@@ -167,7 +167,7 @@ export default function LandingPage() {
             { value: '0€', label: 'Gratuit' },
           ].map((stat, i) => (
             <div key={i} className="text-center">
-              <div className="text-3xl md:text-4xl font-bold gradient-text mb-1">{stat.value}</div>
+              <div className="text-3xl md:text-4xl font-bold text-white mb-1">{stat.value}</div>
               <div className="text-sm text-gray-500">{stat.label}</div>
             </div>
           ))}
@@ -254,7 +254,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-white/5">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="font-semibold gradient-text">Crypto Follow</span>
+          <span className="font-semibold text-white">Crypto Follow</span>
           <p className="text-gray-500 text-sm">
             Propulsé par Next.js, Supabase & CoinGecko API
           </p>

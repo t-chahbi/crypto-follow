@@ -69,7 +69,7 @@ export default async function DashboardPage() {
                         <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                             <div>
                                 <h1 className="text-4xl lg:text-5xl font-bold mb-2">
-                                    <span className="gradient-text">Dashboard</span>
+                                    <span className="text-white">Dashboard</span>
                                 </h1>
                                 <p className="text-gray-400 text-lg">
                                     Bienvenue, <span className="text-white font-medium">{user.email?.split('@')[0]}</span> 👋

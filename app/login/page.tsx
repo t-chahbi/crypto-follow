@@ -56,13 +56,13 @@ export default function LoginPage() {
                             </div>
                             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 blur-xl opacity-50" />
                         </div>
-                        <span className="text-3xl font-bold gradient-text">Crypto Follow</span>
+                        <span className="text-3xl font-bold text-white">Crypto Follow</span>
                     </Link>
 
                     <h1 className="text-5xl font-bold mb-6 leading-tight">
                         Tradez comme les
                         <br />
-                        <span className="gradient-text">professionnels</span>
+                        <span className="text-white">professionnels</span>
                     </h1>
 
                     <p className="text-xl text-gray-400 mb-8 max-w-md">
@@ -94,7 +94,7 @@ export default function LoginPage() {
                         <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
                             <TrendingUp className="w-6 h-6 text-white" />
                         </div>
-                        <span className="text-2xl font-bold gradient-text">Crypto Follow</span>
+                        <span className="text-2xl font-bold text-white">Crypto Follow</span>
                     </Link>
 
                     <div className="glass-card p-8">

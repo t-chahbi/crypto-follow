@@ -58,7 +58,7 @@ export default async function PortfolioPage() {
                     <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                         <div>
                             <h1 className="text-4xl lg:text-5xl font-bold mb-2">
-                                <span className="gradient-text">Mon Portefeuille</span>
+                                <span className="text-white">Mon Portefeuille</span>
                             </h1>
                             <p className="text-gray-400 text-lg">Gérez vos investissements virtuels</p>
                         </div>
