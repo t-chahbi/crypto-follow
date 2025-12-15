@@ -25,21 +25,20 @@ describe('LoginPage', () => {
     it('renders login form with email and password inputs', () => {
         render(<LoginPage />)
 
-        expect(screen.getByPlaceholderText('Adresse Email')).toBeInTheDocument()
-        expect(screen.getByPlaceholderText('Mot de passe')).toBeInTheDocument()
+        expect(screen.getByPlaceholderText('vous@exemple.com')).toBeInTheDocument()
+        expect(screen.getByPlaceholderText('••••••••')).toBeInTheDocument()
     });
 
-    it('renders login and signup buttons', () => {
+    it('renders login button', () => {
         render(<LoginPage />)
 
         expect(screen.getByRole('button', { name: /se connecter/i })).toBeInTheDocument()
-        expect(screen.getByRole('button', { name: /s'inscrire/i })).toBeInTheDocument()
     });
 
     it('allows typing in email input', () => {
         render(<LoginPage />)
 
-        const emailInput = screen.getByPlaceholderText('Adresse Email') as HTMLInputElement
+        const emailInput = screen.getByPlaceholderText('vous@exemple.com') as HTMLInputElement
 
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } })
 
@@ -49,7 +48,7 @@ describe('LoginPage', () => {
     it('allows typing in password input', () => {
         render(<LoginPage />)
 
-        const passwordInput = screen.getByPlaceholderText('Mot de passe') as HTMLInputElement
+        const passwordInput = screen.getByPlaceholderText('••••••••') as HTMLInputElement
 
         fireEvent.change(passwordInput, { target: { value: 'password123' } })
 
@@ -59,12 +58,13 @@ describe('LoginPage', () => {
     it('displays the app title', () => {
         render(<LoginPage />)
 
-        expect(screen.getByText('Crypto Follow')).toBeInTheDocument()
+        // Multiple instances of "Crypto Follow" exist in the page
+        expect(screen.getAllByText('Crypto Follow').length).toBeGreaterThan(0)
     });
 
-    it('displays the subtitle', () => {
+    it('displays the login form header', () => {
         render(<LoginPage />)
 
-        expect(screen.getByText('Connectez-vous à votre compte')).toBeInTheDocument()
+        expect(screen.getByText('Bon retour !')).toBeInTheDocument()
     });
 });
