@@ -123,11 +123,14 @@ export default function CreateAlertForm() {
                                 <Select
                                     label="Cryptomonnaie"
                                     placeholder="Sélectionner un actif"
-                                    selectedKeys={cryptoSymbol ? [cryptoSymbol] : []}
-                                    onSelectionChange={(keys) => setCryptoSymbol(Array.from(keys)[0] as string)}
+                                    selectedKeys={cryptoSymbol ? new Set([cryptoSymbol]) : new Set()}
+                                    onSelectionChange={(keys) => {
+                                        const selected = Array.from(keys)[0] as string
+                                        setCryptoSymbol(selected || '')
+                                    }}
                                 >
                                     {popularCryptos.map((crypto) => (
-                                        <SelectItem key={crypto.symbol}>
+                                        <SelectItem key={crypto.symbol} textValue={`${crypto.symbol} - ${crypto.name}`}>
                                             {crypto.symbol} - {crypto.name}
                                         </SelectItem>
                                     ))}
@@ -136,11 +139,14 @@ export default function CreateAlertForm() {
                                 <Select
                                     label="Condition"
                                     placeholder="Choisir une condition"
-                                    selectedKeys={condition ? [condition] : []}
-                                    onSelectionChange={(keys) => setCondition(Array.from(keys)[0] as string)}
+                                    selectedKeys={condition ? new Set([condition]) : new Set()}
+                                    onSelectionChange={(keys) => {
+                                        const selected = Array.from(keys)[0] as string
+                                        setCondition(selected || '')
+                                    }}
                                 >
                                     {conditions.map((cond) => (
-                                        <SelectItem key={cond.value}>
+                                        <SelectItem key={cond.value} textValue={cond.label}>
                                             {cond.label}
                                         </SelectItem>
                                     ))}

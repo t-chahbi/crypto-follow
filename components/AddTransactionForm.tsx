@@ -214,11 +214,17 @@ export default function AddTransactionForm({ currentBalance, holdings }: AddTran
                                 <Select
                                     label="Cryptomonnaie"
                                     placeholder="Sélectionner un actif"
-                                    selectedKeys={cryptoSymbol ? [cryptoSymbol] : []}
-                                    onSelectionChange={(keys) => setCryptoSymbol(Array.from(keys)[0] as string)}
+                                    selectedKeys={cryptoSymbol ? new Set([cryptoSymbol]) : new Set()}
+                                    onSelectionChange={(keys) => {
+                                        const selected = Array.from(keys)[0] as string
+                                        setCryptoSymbol(selected || '')
+                                    }}
+                                    classNames={{
+                                        trigger: "bg-white/5 border border-white/10",
+                                    }}
                                 >
                                     {popularCryptos.map((crypto) => (
-                                        <SelectItem key={crypto.symbol}>
+                                        <SelectItem key={crypto.symbol} textValue={`${crypto.symbol} - ${crypto.name}`}>
                                             {crypto.symbol} - {crypto.name}
                                         </SelectItem>
                                     ))}
