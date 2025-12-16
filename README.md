@@ -2,7 +2,7 @@
 
 > Plateforme de Surveillance et d'Analyse des Marchés de Cryptomonnaies
 
-[![CI/CD](https://github.com/YOUR_USERNAME/crypto-follow/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/YOUR_USERNAME/crypto-follow/actions/workflows/ci-cd.yml)
+[![CI/CD](https://github.com/t-chahbi/crypto-follow/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/t-chahbi/crypto-follow/actions/workflows/ci-cd.yml)
 [![Tests](https://img.shields.io/badge/tests-52%20passing-brightgreen)](./docs/sprints/sprint-7-review.md)
 [![Next.js](https://img.shields.io/badge/Next.js-16-blue)](https://nextjs.org/)
 
@@ -40,7 +40,7 @@ Crypto Follow est une plateforme complète de suivi, d'analyse et de simulation 
 
 ```bash
 # Cloner le repository
-git clone https://github.com/YOUR_USERNAME/crypto-follow.git
+git clone https://github.com/t-chahbi/crypto-follow.git
 cd crypto-follow
 
 # Installer les dépendances
