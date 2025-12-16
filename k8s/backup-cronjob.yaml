@@ -1,0 +1,80 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-backup
+  namespace: default
+spec:
+  schedule: "0 2 * * *"  # Every day at 2 AM
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: postgres-backup
+              image: postgres:15-alpine
+              env:
+                - name: PGHOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: supabase-secrets
+                      key: host
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: supabase-secrets
+                      key: user
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: supabase-secrets
+                      key: password
+                - name: PGDATABASE
+                  valueFrom:
+                    secretKeyRef:
+                      name: supabase-secrets
+                      key: database
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  FILENAME="backup-$(date +%Y%m%d-%H%M%S).sql.gz"
+                  echo "🔄 Starting backup: $FILENAME"
+                  pg_dump | gzip > /backups/$FILENAME
+                  echo "✅ Backup completed: $FILENAME"
+                  # Keep only last 7 days of backups
+                  find /backups -name "backup-*.sql.gz" -mtime +7 -delete
+                  echo "🧹 Old backups cleaned up"
+              volumeMounts:
+                - name: backup-volume
+                  mountPath: /backups
+          volumes:
+            - name: backup-volume
+              persistentVolumeClaim:
+                claimName: postgres-backup-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-backup-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# Secret template (create manually with real values)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: supabase-secrets
+  namespace: default
+type: Opaque
+stringData:
+  host: "db.xxxxx.supabase.co"      # Replace with your Supabase host
+  user: "postgres"
+  password: "your-password"          # Replace with your password
+  database: "postgres"

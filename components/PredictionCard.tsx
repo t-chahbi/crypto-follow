@@ -103,7 +103,7 @@ export default function PredictionCard({ historicalData, coinName }: PredictionC
                     ))}
                 </div>
 
-                {/* Disclaimer */}
+                {/* {/* Disclaimer
                 <div className="flex items-start gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
                     <AlertTriangle className="text-yellow-500 flex-shrink-0 mt-0.5" size={16} />
                     <p className="text-xs text-yellow-200/80">
@@ -111,7 +111,7 @@ export default function PredictionCard({ historicalData, coinName }: PredictionC
                         et ne constituent pas un conseil financier. Les marchés crypto sont volatils et imprévisibles.
                         Investissez de manière responsable.
                     </p>
-                </div>
+                </div> */}
             </CardBody>
         </Card>
     );
