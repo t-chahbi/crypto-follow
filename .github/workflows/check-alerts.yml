@@ -1,0 +1,35 @@
+name: Check Alerts Cron
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  check-alerts:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check Alerts
+        run: |
+          response=$(curl -s -w "\n%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.APP_URL }}/api/cron/check-alerts")
+          
+          http_code=$(echo "$response" | tail -n 1)
+          body=$(echo "$response" | head -n -1)
+          
+          echo "Response: $body"
+          echo "Status Code: $http_code"
+          
+          if [ "$http_code" -ne 200 ]; then
+            echo "Alert check failed with status code $http_code"
+            exit 1
+          fi
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      
+      - name: Log Result
+        run: echo "Alert check completed at $(date)"
