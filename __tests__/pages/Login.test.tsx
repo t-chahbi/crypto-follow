@@ -22,24 +22,49 @@ jest.mock('@/utils/supabase/client', () => ({
 }));
 
 describe('LoginPage', () => {
-    it('renders login form', () => {
+    it('renders login form with email and password inputs', () => {
         render(<LoginPage />)
 
-        expect(screen.getByPlaceholderText('Email address')).toBeInTheDocument()
-        expect(screen.getByPlaceholderText('Password')).toBeInTheDocument()
-        expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument()
+        expect(screen.getByPlaceholderText('Adresse Email')).toBeInTheDocument()
+        expect(screen.getByPlaceholderText('Mot de passe')).toBeInTheDocument()
     });
 
-    it('allows typing in inputs', () => {
+    it('renders login and signup buttons', () => {
         render(<LoginPage />)
 
-        const emailInput = screen.getByPlaceholderText('Email address') as HTMLInputElement
-        const passwordInput = screen.getByPlaceholderText('Password') as HTMLInputElement
+        expect(screen.getByRole('button', { name: /se connecter/i })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: /s'inscrire/i })).toBeInTheDocument()
+    });
+
+    it('allows typing in email input', () => {
+        render(<LoginPage />)
+
+        const emailInput = screen.getByPlaceholderText('Adresse Email') as HTMLInputElement
 
         fireEvent.change(emailInput, { target: { value: 'test@example.com' } })
-        fireEvent.change(passwordInput, { target: { value: 'password123' } })
 
         expect(emailInput.value).toBe('test@example.com')
+    });
+
+    it('allows typing in password input', () => {
+        render(<LoginPage />)
+
+        const passwordInput = screen.getByPlaceholderText('Mot de passe') as HTMLInputElement
+
+        fireEvent.change(passwordInput, { target: { value: 'password123' } })
+
         expect(passwordInput.value).toBe('password123')
+    });
+
+    it('displays the app title', () => {
+        render(<LoginPage />)
+
+        expect(screen.getByText('Crypto Follow')).toBeInTheDocument()
+    });
+
+    it('displays the subtitle', () => {
+        render(<LoginPage />)
+
+        expect(screen.getByText('Connectez-vous à votre compte')).toBeInTheDocument()
     });
 });
