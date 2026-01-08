@@ -1,36 +1,185 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Crypto Follow 🚀
 
-## Getting Started
+> Plateforme de Surveillance et d'Analyse des Marchés de Cryptomonnaies
 
-First, run the development server:
+[![CI/CD](https://github.com/YOUR_USERNAME/crypto-follow/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/YOUR_USERNAME/crypto-follow/actions/workflows/ci-cd.yml)
+[![Tests](https://img.shields.io/badge/tests-52%20passing-brightgreen)](./docs/sprints/sprint-7-review.md)
+[![Next.js](https://img.shields.io/badge/Next.js-16-blue)](https://nextjs.org/)
+
+## 📋 Description
+
+Crypto Follow est une plateforme complète de suivi, d'analyse et de simulation d'investissement en cryptomonnaies. Elle permet aux utilisateurs de :
+
+- 📊 **Visualiser** les données du marché en temps réel (prix, volumes, capitalisation)
+- 📈 **Analyser** avec des indicateurs techniques (SMA 7j/30j, détection de croisements)
+- 🔮 **Prévoir** les tendances via régression linéaire
+- 🔔 **Configurer** des alertes de prix personnalisées
+- 💼 **Simuler** un portefeuille virtuel avec calcul de P&L
+
+## 🛠️ Stack Technique
+
+| Catégorie | Technologie |
+|-----------|-------------|
+| Frontend | Next.js 16, React 19, TypeScript |
+| UI | HeroUI, TailwindCSS 4, Recharts |
+| Backend | Supabase (Auth, PostgreSQL, RLS) |
+| API Externe | CoinGecko API |
+| Tests | Jest, React Testing Library |
+| CI/CD | GitHub Actions, Docker |
+| Infra | Kubernetes (k8s), k0s |
+
+## 🚀 Installation
+
+### Prérequis
+
+- Node.js 18+
+- npm ou yarn
+- Compte Supabase
+
+### Installation locale
 
 ```bash
+# Cloner le repository
+git clone https://github.com/YOUR_USERNAME/crypto-follow.git
+cd crypto-follow
+
+# Installer les dépendances
+npm install
+
+# Configurer les variables d'environnement
+cp .env.example .env
+# Éditer .env avec vos clés Supabase
+
+# Lancer le serveur de développement
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrir [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Variables d'environnement
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+NEXT_PUBLIC_SUPABASE_URL=votre_url_supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=votre_clé_anon
+SUPABASE_SERVICE_ROLE_KEY=votre_clé_service (pour le cron)
+CRON_SECRET=secret_pour_authentifier_le_cron
+DISCORD_WEBHOOK_URL=webhook_discord_optionnel
+```
 
-## Learn More
+## 📂 Structure du Projet
 
-To learn more about Next.js, take a look at the following resources:
+```
+crypto-follow/
+├── app/                    # Pages Next.js App Router
+│   ├── alerts/             # Gestion des alertes
+│   ├── api/cron/           # API routes (vérification alertes)
+│   ├── crypto/[id]/        # Détail d'une crypto
+│   ├── dashboard/          # Tableau de bord principal
+│   ├── login/              # Authentification
+│   └── portfolio/          # Portefeuille virtuel
+├── components/             # Composants React réutilisables
+├── utils/                  # Fonctions utilitaires
+│   ├── coingecko.ts        # API CoinGecko
+│   ├── technicalIndicators.ts  # Calculs SMA
+│   ├── prediction.ts       # Régression linéaire
+│   ├── portfolio.ts        # Calculs P&L
+│   └── notifications.ts    # Envoi alertes
+├── __tests__/              # Tests unitaires
+├── k8s/                    # Manifests Kubernetes
+├── supabase/               # Schéma SQL & Docker Compose
+└── docs/sprints/           # Sprint Reviews
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🧪 Tests
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Exécuter tous les tests
+npm test
 
-## Deploy on Vercel
+# Mode watch
+npm run test:watch
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Avec couverture
+npm test -- --coverage
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Couverture actuelle :** 52 tests (95% utils, 60% components)
+
+## 📊 Fonctionnalités
+
+### Dashboard
+- Statistiques globales du marché
+- Tableau des 20 premières cryptos
+- Variation 24h, capitalisation, volume
+
+### Graphiques Avancés
+- Courbe de prix sur 7 jours
+- **SMA 7 jours** (ligne bleue)
+- **SMA 30 jours** (ligne orange)
+- Détection automatique Golden Cross / Death Cross
+
+### Prévisions IA
+- Régression linéaire sur historique
+- Prédiction J+1 à J+7
+- Indicateur de confiance (R²)
+- Tendance (bullish/bearish/neutral)
+
+### Alertes
+- Création d'alertes personnalisées
+- Conditions : SUPÉRIEUR À / INFÉRIEUR À
+- Notifications email et Discord
+- Cron de vérification (GitHub Actions)
+
+### Portefeuille Virtuel
+- Simulation d'achats/ventes
+- Calcul P&L par actif
+- P&L total et rendement %
+- Prix moyen d'achat
+
+## 🚢 Déploiement
+
+### Docker
+
+```bash
+# Build
+docker build -t crypto-follow .
+
+# Run
+docker run -p 3000:3000 crypto-follow
+```
+
+### Kubernetes
+
+```bash
+# Appliquer les manifests
+kubectl apply -f k8s/
+
+# Vérifier le déploiement
+kubectl get pods -l app=crypto-monitor
+```
+
+## 📅 Sprints
+
+| Sprint | Période | Thème | Statut |
+|--------|---------|-------|--------|
+| Sprint 4 | 5-12 Déc 2025 | Indicateurs Techniques | ✅ |
+| Sprint 5 | 13-20 Déc 2025 | Système d'Alertes | ✅ |
+| Sprint 6 | 21-28 Déc 2025 | Portefeuille Virtuel | ✅ |
+| Sprint 7 | 29 Déc - 5 Jan | Tests & Qualité | ✅ |
+| Sprint 8 | 6-8 Jan 2026 | Documentation | ✅ |
+
+Voir les [Sprint Reviews](./docs/sprints/) pour les détails.
+
+## 🔗 Liens Utiles
+
+- [Suivi Agile (Notion)](https://www.notion.so/Application-GLA-2bdcac58509880e19c0ef7ca129dd152)
+- [Diagrammes UML](./diagrammes_mermaid.md)
+- [Documentation CoinGecko API](https://docs.coingecko.com/reference/introduction)
+
+## 👥 Équipe
+
+- **Thaha** - Développeur Full Stack
+
+## 📄 Licence
+
+Ce projet est réalisé dans le cadre du cours Application GLA - M1 Informatique.

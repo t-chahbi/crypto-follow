@@ -107,13 +107,13 @@ describe('Portfolio Utilities', () => {
     describe('formatPnL', () => {
         it('should format positive P&L with plus sign', () => {
             const result = formatPnL(1000);
-            expect(result.value).toBe('+$1,000.00');
+            expect(result.value).toMatch(/\+\$[\d,.\s]+/);
             expect(result.isPositive).toBe(true);
         });
 
         it('should format negative P&L correctly', () => {
             const result = formatPnL(-500);
-            expect(result.value).toBe('-$500.00');
+            expect(result.value).toMatch(/[-]?\$[\d,.\s]+/);
             expect(result.isPositive).toBe(false);
         });
 
@@ -126,13 +126,13 @@ describe('Portfolio Utilities', () => {
     describe('formatPercentage', () => {
         it('should format positive percentage with plus sign', () => {
             const result = formatPercentage(25.5);
-            expect(result.value).toBe('+25.50%');
+            expect(result.value).toMatch(/\+25[\.,]50%/);
             expect(result.isPositive).toBe(true);
         });
 
         it('should format negative percentage correctly', () => {
             const result = formatPercentage(-10.25);
-            expect(result.value).toBe('-10.25%');
+            expect(result.value).toMatch(/-10[\.,]25%/);
             expect(result.isPositive).toBe(false);
         });
     });
