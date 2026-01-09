@@ -6,6 +6,7 @@ import { createClient } from '@/utils/supabase/client'
 import { Button, Input } from "@heroui/react"
 import { Mail, Lock, TrendingUp, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
+import { signUpWithAutoConfirm } from './actions'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
@@ -26,8 +27,30 @@ export default function LoginPage() {
                 const { error } = await supabase.auth.signInWithPassword({ email, password })
                 if (error) throw error
             } else {
-                const { error } = await supabase.auth.signUp({ email, password })
-                if (error) throw error
+                // Tentative d'inscription avec auto-confirmation (si activé par var env)
+                const formData = new FormData()
+                formData.append('email', email)
+                formData.append('password', password)
+
+                const result = await signUpWithAutoConfirm(formData)
+
+                if (result.error) {
+                    throw new Error(result.error)
+                }
+
+                // Si l'auto-verif est désactivée, on utilise la méthode standard
+                if (result.useStandardSignup) {
+                    const { error } = await supabase.auth.signUp({ email, password })
+                    if (error) throw error
+                    // Pas de connexion auto ici car email non vérifié
+                } else {
+                    // Si auto-verif réussi, on connecte l'utilisateur
+                    const { error: signInError } = await supabase.auth.signInWithPassword({
+                        email,
+                        password
+                    })
+                    if (signInError) throw signInError
+                }
             }
             router.push('/dashboard')
         } catch (err: any) {
