@@ -84,7 +84,7 @@ function textSummary(data, opts) {
 
 🔄 Requêtes totales: ${data.metrics.http_reqs.values.count}
 ⏱️ Durée moyenne: ${Math.round(data.metrics.http_req_duration.values.avg)}ms
-🚀 Durée p95: ${Math.round(data.metrics.http_req_duration.values['p(95)']}ms
+🚀 Durée p95: ${Math.round(data.metrics.http_req_duration.values['p(95)'])}ms
 ❌ Taux d'erreur: ${(data.metrics.errors.values.rate * 100).toFixed(2)}%
 
 Seuils:
