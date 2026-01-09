@@ -78,7 +78,7 @@ jobs:
   # Job 3: Deploy to Kubernetes
   deploy:
     needs: build-and-push
-    runs-on: self-hosted
+    runs-on: self-hosted # Ce qui permet d'utiliser github acction runner sur ma machine
     if: github.event_name == 'push'
     steps:
       - name: Checkout repository
