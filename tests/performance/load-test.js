@@ -17,13 +17,13 @@ const pageLoadTrend = new Trend('page_load_time');
 export const options = {
     stages: [
         { duration: '30s', target: 10 },   // Montée à 10 users
-        { duration: '1m', target: 50 },    // Montée à 50 users
+        { duration: '1m', target: 50 },
         { duration: '2m', target: 50 },    // Maintien à 50 users
         { duration: '30s', target: 0 },    // Descente à 0
     ],
     thresholds: {
-        http_req_duration: ['p(95)<500'],  // 95% des requêtes < 500ms
-        errors: ['rate<0.1'],               // Moins de 10% d'erreurs
+        http_req_duration: ['p(95)<500'],
+        errors: ['rate<0.1'],
     },
 };
 
